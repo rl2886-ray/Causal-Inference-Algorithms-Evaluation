@@ -5,7 +5,7 @@
 Term: Fall 2020
 
 + Team #
-+ Projec title: Causal Inference 
++ Projec title: Causal Inference Algorithms Evaluation
 + Team members
 	+ Akey, Kristen kka2120@columbia.edu
 	+ Liang, Citina sl4671@columbia.edu

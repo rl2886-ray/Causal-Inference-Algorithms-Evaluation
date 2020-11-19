@@ -1,0 +1,87 @@
+---
+title: "Casual_Inference"
+author: "Mubai"
+date: "11/16/2020"
+output: html_document
+---
+
+# L1 Penalized Logistic Regression
+```{r}
+library(tidyverse)
+library(glmnet)
+low <- read.csv("lowDim_dataset.csv")
+high <- read.csv("highDIm_dataset.csv")
+low$A <- as.factor(low$A)
+high$A <- as.factor(high$A)
+```
+
+# Calculating Propensity Score
+```{r}
+set.seed(0)
+X_low <- low %>% select(-Y, -A) %>% as.matrix
+A_low <- low %>% select(A) %>% as.matrix
+cv_l1 <- cv.glmnet(X_low, A_low, family = "binomial", alpha = 1)
+l1_low <- glmnet(X_low, A_low, family = "binomial", alpha = 1, lambda = cv_l1$lambda.min)
+propen_score_low <- predict(l1_low, X_low, type = "response")
+```
+
+```{r}
+X_high <- high %>% select(-Y, -A) %>% as.matrix
+A_high <- high %>% select(A) %>% as.matrix
+cv_l1_high <- cv.glmnet(X_high, A_high, family = "binomial", alpha = 1)
+l1_high <- glmnet(X_high, A_high, family = "binomial", alpha = 1, lambda = cv_l1_high$lambda.min)
+propen_score_high <- predict(l1_high, X_high, type = "response")
+```
+
+# Finding weights
+```{r}
+weight_low <- cbind(as.numeric(A_low), propen_score_low) %>% 
+  as_tibble %>%
+  mutate(weights = (V1/s0 + (1-V1)/(1-s0))) %>%
+  select(weights)
+```
+
+```{r}
+weight_high <- cbind(as.numeric(A_high), propen_score_high) %>%
+  as_tibble %>%
+  mutate(weights = (V1/s0) + (1-V1)/(1-s0)) %>%
+  select(weights)
+```
+
+# Linear regression for selecting covarites
+```{r}
+filter_low <- summary(lm(Y~., data = low))$coef[,4][3:24]<0.05
+Z_low <- cbind(A_low, X_low[,filter_low])
+```
+
+```{r}
+filter_high <- summary(lm(Y~., data = high))$coef[,4][3:ncol(X_high)]<0.05
+Z_high <- cbind(A_high, X_high[,filter_high])
+```
+
+# Modify the data
+```{r}
+Z_low <- Z_low %>% apply(2, as.numeric)
+Z_high <- Z_high %>% apply(2, as.numeric)
+```
+
+
+# Final Regression for ATE
+```{r}
+Y_low <- low$Y
+Y_high <- high$Y
+```
+
+```{r}
+weighted_low <- lm(Y_low ~ Z_low, weights = as.numeric(unlist(weight_low)))
+ATE_low <- coef(weighted_low)[2]
+```
+```{r}
+weighted_high <- lm(Y_high ~ Z_high, weights = as.numeric(unlist(weight_high)))
+ATE_high <- coef(weighted_high)[2]
+```
+```{r}
+ATE_low
+ATE_high
+```
+

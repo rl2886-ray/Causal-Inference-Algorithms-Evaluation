@@ -1,0 +1,71 @@
+---
+title: "Inverse_Propensity_Score"
+author: "RuiLiang&rl2886"
+date: "11/14/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Libraries
+library(glmnet)
+library(tidyverse)
+library(pryr)
+```
+
+## Data Preprocessing
+
+```{r }
+# Load the data
+highDim<-read.csv(file ='../data/highDim_dataset.csv')
+lowDim<-read.csv(file ='../data/lowDim_dataset.csv')
+
+# Split into x, A and y
+hY<-highDim$Y
+hA<-highDim$A
+hX<-highDim%>% select(-Y, -A) %>% as.matrix
+
+lY<-lowDim$Y
+lA<-lowDim$A
+lX<-lowDim%>% select(-Y, -A) %>% as.matrix
+
+```
+
+## IPW
+
+```{r }
+# IPW
+# Setting alpha = 1 implements lasso regression
+set.seed(0)
+lasso_hd <- cv.glmnet(hX, hA,family = "binomial", alpha = 1)
+lasso_ld <- cv.glmnet(lX, lA, family = "binomial",alpha = 1)
+
+IPW<-function(x,A,model,data){
+      start_time <- Sys.time()
+      # Calculate the propensity score 
+      lasso_model <- glmnet(x, A, alpha = 1, family = "binomial",lambda = model$lambda.min)
+      propensity <- predict(lasso_model, x, type = "response")
+      
+      # Calculate the weights
+      weight <- 1 / propensity * A + 1 / (1 - propensity) * (1 - A)
+      
+      resampled_data <- data %>%
+            mutate(propensity = propensity,
+                   weight = weight,
+                   Y_Weight = Y*weight)
+      
+      ATE<-1/nrow(resampled_data)*(sum(resampled_data[resampled_data$A==1,"Y_Weight"])
+                                   -sum(resampled_data[resampled_data$A==0,"Y_Weight"]))
+      end_time <- Sys.time()
+      return(list(ATE=ATE,running_time = end_time - start_time))
+}
+ATE_highDim<-IPW(hX,hA,lasso_hd,highDim)
+ATE_lowDim<-IPW(lX,lA,lasso_ld,lowDim)
+
+matrix(c(ATE_highDim$ATE,ATE_lowDim$ATE,
+         ATE_highDim$running_time,ATE_lowDim$running_time),nrow = 2,byrow = TRUE,
+       dimnames = list(c("ATE","running_time (secs)"), c("highDim","lowDim")))
+
+
+```
+

@@ -1,0 +1,85 @@
+---
+title: "Regression Estimate"
+author: Citina Liang
+output: pdf_document
+---
+
+### Some notes from the literature review
+* In the regression estimate in Chan et al. (2010), it calculates the ATT (Average Treatment Effect on Treatment), where the expression is $\hat{\Delta}_{reg}=n_1^{-1}\sum\limits_{exposed}(\hat{m}_1(\mathbf{X}_i)-\hat{m}_0(\mathbf{X}_i))$
+
+* Differently, our goal is to estimate the ATE (Average Treatment Effect) and 95% confidence interval. The ATE formula is $\hat{\Delta}_{reg}=N^{-1}\sum\limits_{i=1}^{N}(\hat{m}_1(\mathbf{X}_i)-\hat{m}_0(\mathbf{X}_i))$
+
+* Propensity scores can be used to choose matched control group that is more similar with the trt group to calculate more accurate Y
+
+* Correlation doesn't imply causation, but we can assume that to test if a treatment make a difference in result variable. One problem is we don't have all variables that affect the outcome, so we have un-confoundedness assumption
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+# load libraries
+library(readr)
+library(tidyverse)
+```
+
+```{r}
+# read in data
+df_ld <- read_csv('../data/lowDim_dataset.csv') #475  24
+df_hd <- read_csv('../data/highDim_dataset.csv') #2000  187
+df_ld <- df_ld %>% mutate(A = factor(A))
+df_hd <- df_hd %>% mutate(A = factor(A))
+
+# seperate X and Y, will be used in predict function
+df_ld_X <- df_ld %>% select(-Y, -A)
+df_hd_X <- df_hd %>% select(-Y, -A)
+
+# data description
+df_ld %>% head()
+df_hd %>% head()
+
+df_ld$A %>% table() %>% prop.table()
+df_hd$A %>% table() %>% prop.table()
+
+df_ld %>% group_by(A) %>% summarize(mean(Y))
+df_hd %>% group_by(A) %>% summarize(mean(Y))
+```
+
+```{r}
+# simple regression estimate
+# m0
+m_ld0 <- glm(Y ~ ., data = subset(df_ld[df_ld$A==0,], select = -A))
+m_hd0 <- glm(Y ~ ., data = subset(df_hd[df_hd$A==0,], select = -A))
+# m1
+m_ld1 <- glm(Y ~ ., data = subset(df_ld[df_ld$A==1,], select = -A))
+m_hd1 <- glm(Y ~ ., data = subset(df_hd[df_hd$A==1,], select = -A))
+
+# prediction using non-treatment model params
+Y_pred_ld0 <- predict(m_ld0, newdata = df_ld_X)
+Y_pred_hd0 <- predict(m_hd0, newdata = df_hd_X)
+
+# prediction using treatment model params
+Y_pred_ld1 <- predict(m_ld1, newdata = df_ld_X)
+Y_pred_hd1 <- predict(m_hd1, newdata = df_hd_X)
+
+# add predicted y to the dataframe
+df_ld <- df_ld %>% mutate(Y_pred1 = Y_pred_ld1, Y_pred0 = Y_pred_ld0)
+df_hd <- df_hd %>% mutate(Y_pred1 = Y_pred_hd1, Y_pred0 = Y_pred_hd0)
+
+par(mfrow=c(2,3))
+plot(df_ld$A, Y_pred_ld1)
+plot(df_ld$A, Y_pred_ld0)
+plot(df_ld$A, df_ld$Y)
+plot(df_hd$A, Y_pred_hd1)
+plot(df_hd$A, Y_pred_hd0)
+plot(df_hd$A, df_hd$Y)
+
+# calculate ATE
+ATE <- function(df){
+  n <- nrow(df)
+  return(1/n * sum(df$Y_pred1 - df$Y_pred0))
+}
+ATE(df_ld) #2.526944
+ATE(df_hd) #-2.95978
+```

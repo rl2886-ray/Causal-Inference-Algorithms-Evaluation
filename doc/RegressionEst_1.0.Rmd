@@ -31,10 +31,6 @@ df_hd <- read_csv('../data/highDim_dataset.csv') #2000  187
 df_ld <- df_ld %>% mutate(A = factor(A))
 df_hd <- df_hd %>% mutate(A = factor(A))
 
-# seperate X and Y, will be used in predict function
-df_ld_X <- df_ld %>% select(-Y, -A)
-df_hd_X <- df_hd %>% select(-Y, -A)
-
 # data description
 df_ld %>% head()
 df_hd %>% head()
@@ -47,39 +43,62 @@ df_hd %>% group_by(A) %>% summarize(mean(Y))
 ```
 
 ```{r}
-# simple regression estimate
-# m0
-m_ld0 <- glm(Y ~ ., data = subset(df_ld[df_ld$A==0,], select = -A))
-m_hd0 <- glm(Y ~ ., data = subset(df_hd[df_hd$A==0,], select = -A))
-# m1
-m_ld1 <- glm(Y ~ ., data = subset(df_ld[df_ld$A==1,], select = -A))
-m_hd1 <- glm(Y ~ ., data = subset(df_hd[df_hd$A==1,], select = -A))
+# # simple regression estimate
+# # m0
+# m_ld0 <- glm(Y ~ ., data = subset(df_ld[df_ld$A==0,], select = -A))
+# m_hd0 <- glm(Y ~ ., data = subset(df_hd[df_hd$A==0,], select = -A))
+# # m1
+# m_ld1 <- glm(Y ~ ., data = subset(df_ld[df_ld$A==1,], select = -A))
+# m_hd1 <- glm(Y ~ ., data = subset(df_hd[df_hd$A==1,], select = -A))
+# 
+# # prediction using non-treatment model params
+# Y_pred_ld0 <- predict(m_ld0, newdata = df_ld_X)
+# Y_pred_hd0 <- predict(m_hd0, newdata = df_hd_X)
+# 
+# # prediction using treatment model params
+# Y_pred_ld1 <- predict(m_ld1, newdata = df_ld_X)
+# Y_pred_hd1 <- predict(m_hd1, newdata = df_hd_X)
+# 
+# # add predicted y to the dataframe
+# df_ld <- df_ld %>% mutate(Y_pred1 = Y_pred_ld1, Y_pred0 = Y_pred_ld0)
+# df_hd <- df_hd %>% mutate(Y_pred1 = Y_pred_hd1, Y_pred0 = Y_pred_hd0)
+# 
+# par(mfrow=c(2,3))
+# plot(df_ld$A, Y_pred_ld1)
+# plot(df_ld$A, Y_pred_ld0)
+# plot(df_ld$A, df_ld$Y)
+# plot(df_hd$A, Y_pred_hd1)
+# plot(df_hd$A, Y_pred_hd0)
+# plot(df_hd$A, df_hd$Y)
 
-# prediction using non-treatment model params
-Y_pred_ld0 <- predict(m_ld0, newdata = df_ld_X)
-Y_pred_hd0 <- predict(m_hd0, newdata = df_hd_X)
-
-# prediction using treatment model params
-Y_pred_ld1 <- predict(m_ld1, newdata = df_ld_X)
-Y_pred_hd1 <- predict(m_hd1, newdata = df_hd_X)
-
-# add predicted y to the dataframe
-df_ld <- df_ld %>% mutate(Y_pred1 = Y_pred_ld1, Y_pred0 = Y_pred_ld0)
-df_hd <- df_hd %>% mutate(Y_pred1 = Y_pred_hd1, Y_pred0 = Y_pred_hd0)
-
-par(mfrow=c(2,3))
-plot(df_ld$A, Y_pred_ld1)
-plot(df_ld$A, Y_pred_ld0)
-plot(df_ld$A, df_ld$Y)
-plot(df_hd$A, Y_pred_hd1)
-plot(df_hd$A, Y_pred_hd0)
-plot(df_hd$A, df_hd$Y)
-
-# calculate ATE
-ATE <- function(df){
+RE <- function(df){
+  # simple regression estimate
+  # separate X and Y, will be used in predict function
+  df_X <- df %>% select(-Y, -A)
+  
+  start <- Sys.time()
+  # m0
+  m0 <- glm(Y ~ ., data = subset(df[df$A==0,], select = -A))
+  # m1
+  m1 <- glm(Y ~ ., data = subset(df[df$A==1,], select = -A))
+  # prediction using non-treatment model params
+  Y_pred_0 <- predict(m0, newdata = df_X)
+  # prediction using treatment model params
+  Y_pred_1 <- predict(m1, newdata = df_X) 
+  # add predicted y to the dataframe
+  df <- df %>% mutate(Y_pred1 = Y_pred_1, Y_pred0 = Y_pred_0)
+  
+  # calculate ATE
   n <- nrow(df)
-  return(1/n * sum(df$Y_pred1 - df$Y_pred0))
+  ATE = 1/n * sum(df$Y_pred1 - df$Y_pred0)
+  end <- Sys.time()
+  runtime = end - start
+  return(list(ATE = ATE,
+              runtime = runtime))
 }
-ATE(df_ld) #2.526944
-ATE(df_hd) #-2.95978
+
+RE(df_ld) #ATE: 2.526944, runtime:0.01652098
+RE(df_hd) #ATE: -2.95978, runtime:0.2156122
 ```
+
+

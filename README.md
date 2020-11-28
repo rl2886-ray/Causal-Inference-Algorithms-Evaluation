@@ -13,7 +13,7 @@ Term: Fall 2020
 	+ Liu, Mubai ml4407@columbia.edu
 	+ Yin, Wen wy2337@columbia.edu
 	
-+ Project summary: We evaluate three causal inference algorithms. The three models include inverse propensity weighting (IPW) + L1 penalized logistic regression, regression estimate, and weighted regression + L1 penalized logistic regression. We compute the average treatment effect (ATE) using these algorithms on two distinct datasets and compare their performance and computational efficiency. 
++ Project summary: We evaluate three causal inference algorithms. The three models include inverse propensity weighting (IPW) + L1 penalized logistic regression, regression estimate, and weighted regression + L1 penalized logistic regression. We compute the average treatment effect (ATE) using these algorithms on two distinct datasets and compare their performance and computational efficiency. Weighted regression + L1 penalized logistic regression has the best performance on both datasets.
 
 Performance - squared difference of true ATE and estimated ATE
 

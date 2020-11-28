@@ -4,7 +4,7 @@
 
 Term: Fall 2020
 
-+ Team #
++ Team # 6
 + Projec title: Causal Inference Algorithms Evaluation
 + Team members
 	+ Akey, Kristen kka2120@columbia.edu
@@ -13,14 +13,23 @@ Term: Fall 2020
 	+ Liu, Mubai ml4407@columbia.edu
 	+ Yin, Wen wy2337@columbia.edu
 	
-+ Project summary: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
++ Project summary: We evaluate three causal inference algorithms. The three models include inverse propensity weighting (IPW) + L1 penalized logistic regression, regression estimate, and weighted regression + L1 penalized logistic regression. We compute the average treatment effect (ATE) using these algorithms on two distinct datasets and compare their performance and computational efficiency. 
 
-| Model      |Computational Cost| Accuracy | 
+Performance - squared difference of true ATE and estimated ATE
+
+| High Dim. Dataset |
+| Model      |Computational Cost| Performance | 
 | ----------- | ----------- | ------    |
-| Inverse Propensity Weighting (IPW) + L1 penalized Logistics regression     |       |       | 
-| Regression Estimate (Dont need Propensity Score)      |       |       | 
-| Weighted Regression + L1 penalized Logistics regression      |       |       |
+| Inverse Propensity Weighting (IPW) + L1 penalized Logistics regression     |  -2.218    |  0.88     | 
+| Regression Estimate (Dont need Propensity Score)      |  -2.959      |   0.20    | 
+| Weighted Regression + L1 penalized Logistics regression      |   -2.980    |   0.14    |
 
+| Low Dim. Dataset |
+| Model      |Computational Cost| Performance | 
+| ----------- | ----------- | ------    |
+| Inverse Propensity Weighting (IPW) + L1 penalized Logistics regression     |   2.210    |  0.54     | 
+| Regression Estimate (Dont need Propensity Score)      |   2.526   |  0.16     | 
+| Weighted Regression + L1 penalized Logistics regression      |  2.519     |   0.14    |
 
 **Contribution statement**: [default] All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
 

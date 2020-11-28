@@ -47,7 +47,7 @@ This report includes a description of each of the algorithms, code to reproduce 
 
 ## Model 1: Inverse Propensity Weighting and L1 Penalized Logistic Regression
 
-
+The propensity score is predicted through a lasso logistic regression model. Weights for the propensity score are then calculated using the inverse probability of treatment weighting (IPTW) formula. The average treatment effect is then calculated using inverse propensity weighting.
 ```{r prep data}
 # Split into x, A and y
 hY<-highDim$Y
@@ -97,6 +97,8 @@ matrix(c(ATE_highDim$ATE,ATE_lowDim$ATE,
 \newpage
 ## Model 2: Regression Estimate
 
+The regression estimate does not use the propensity score. The model creates predictions for the control and treatment groups, and calculates the average treatment effect using these predications.  
+
 ```{r prep data reg estimate}
 df_ld <- lowDim %>% mutate(A = factor(A))
 df_hd <- highDim %>% mutate(A = factor(A))
@@ -139,6 +141,8 @@ matrix(c(RE(df_hd)$ATE,RE(df_ld)$ATE,
 
 \newpage
 ## Model 3: Weighted Regression and L1 Penalized Logistic Regression 
+
+The propensity score is predicted through a lasso logistic regression model. Weights for the propensity score are then calculated using the inverse probability of treatment weighting (IPTW) formula. The average treatment effect is then calculated using a weighted regression model.
 
 ```{r weighted reg. low dim}
 set.seed(0)
@@ -201,6 +205,12 @@ end_time <- Sys.time()
 running_time_high = end_time - start_time
 ```
 
+```{r}
+matrix(c(ATE_high,ATE_low,
+         running_time_high,running_time_low),
+         nrow = 2,byrow = TRUE,
+         dimnames = list(c("ATE","running_time (secs)"), c("highDim","lowDim")))
+```
 
 
 ## Model Comparisons

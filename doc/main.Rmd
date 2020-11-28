@@ -40,7 +40,7 @@ highDim <- read_csv('../data/highDim_dataset.csv')
 
 ## Project Overview
 
-In this project, we evaluate three causal inference algorithms. The three models include inverse propensity weighting (IPW) + L1 penalized logistic regression, regression estimate, and weighted regression + L1 penalized logistic regression. We compute the average treatment effect effect using these algorithms on two distinct datasets. 
+In this project, we evaluate three causal inference algorithms. The three models include inverse propensity weighting (IPW) + L1 penalized logistic regression, regression estimate, and weighted regression + L1 penalized logistic regression. We compute the average treatment effect (ATE) using these algorithms on two distinct datasets and compare their performance and computational efficiency.  
 
 This report includes a description of each of the algorithms, code to reproduce our results, and a final comparison of each of these models.
 
@@ -233,7 +233,7 @@ ft_true <- autofit(ft_true)
 ft_true
 ```
 
-Performance = square difference of true ATE and estimated ATE
+Performance = squared difference of true ATE and estimated ATE
 
 Run time (in seconds)
 

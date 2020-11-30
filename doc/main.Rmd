@@ -264,6 +264,20 @@ low_results <- data.frame(
 ```
 
 
+
+
+```{r echo=F}
+knitr::kable(low_results)
+knitr::kable(high_results)
+```
+
+
+
+
+
+
+
+
 ```{r echo=F}
 myft_high <- flextable(high_results)
 ft_high <- add_header_lines(myft_high, 

@@ -263,20 +263,10 @@ low_results <- data.frame(
 
 ```
 
-
-
-
 ```{r echo=F}
 knitr::kable(low_results)
 knitr::kable(high_results)
 ```
-
-
-
-
-
-
-
 
 ```{r echo=F}
 myft_high <- flextable(high_results)
@@ -300,6 +290,56 @@ ft_low <- theme_box(ft_low)
 ft_low
 ft_high
 ```
+
+\newpage
+```{r echo=FALSE}
+high_results <- high_results %>% 
+  mutate(dim = 'high') %>% 
+  mutate(Model = c("IPW +\n Lasso Logistic Regression", "Regression Estimate",
+                     "Weighted Regression +\n Lasso Logistic Regression")) %>% 
+  mutate(true_ATE = -3)
+low_results <- low_results %>% 
+  mutate(dim = 'low') %>% 
+  mutate(Model = c("IPW +\n Lasso Logistic Regression", "Regression Estimate",
+                     "Weighted Regression +\n Lasso Logistic Regression")) %>% 
+  mutate(true_ATE = 2.5)
+results <- rbind(low_results, high_results)
+
+#plots
+ggplot(results, aes(Model, ATE, group=dim, col = dim)) +
+  geom_point() +
+  geom_line()+
+  labs(title='ATE of Different Models',
+       x='',
+       y='',
+       col='Dimension') +
+  geom_text(aes(label=as.character(round(ATE, 3))), nudge_y = 0.2)+
+  theme_light()
+
+ggplot(results, aes(Model, Performance, group=dim, col = dim)) +
+  geom_point() +
+  geom_line()+
+  labs(title='Performance of Different Models',
+       x='',
+       y='Sqrt. Error',
+       col='Dimension') +
+  theme_light()
+
+ggplot(results, aes(Model, Run.Time, group=dim, col = dim)) +
+  geom_point() +
+  geom_line()+
+  labs(title='Run Time of Different Models',
+       x='',
+       y='Run Time (in seconds)',
+       col='Dimension') +
+  theme_light()
+```
+
+
+
+
+
+
 
 
 

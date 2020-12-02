@@ -35,7 +35,7 @@ Performance - squared difference of true ATE and estimated ATE
 
 Kristen created the main report pdf and assisted with coding Inverse Propensity Weighting (IPW) + L1 penalized Logistic regression. Citina coded Regression Estimate method and created plots in main report. Rui coded Inverse Propensity Weighting (IPW) + L1 penalized Logistic regression. Mubai wrote the Weighted regression + L1 penalization logistic regression method, edited the presentation slides, modified main rmd.
 
-Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
+Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is organized as follows.
 
 ```
 proj/

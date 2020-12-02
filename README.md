@@ -31,7 +31,9 @@ Performance - squared difference of true ATE and estimated ATE
 | Regression Estimate (Dont need Propensity Score)      |   2.526   |  0.16     | 
 | Weighted Regression + L1 penalized Logistics regression      |  2.519     |   0.14    |
 
-**Contribution statement**: [default] All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
+**Contribution statement**: All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
+
+Kristen created the main report pdf and assisted with coding Inverse Propensity Weighting (IPW) + L1 penalized Logistic regression. Citina coded Regression Estimate method and created plots in main report. Rui coded Inverse Propensity Weighting (IPW) + L1 penalized Logistic regression. Mubai wrote the Weighted regression + L1 penalization logistic regression method, edited the presentation slides, modified main rmd.
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 

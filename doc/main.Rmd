@@ -146,10 +146,11 @@ The propensity score is predicted through a lasso logistic regression model. Wei
 
 ```{r weighted reg. low dim}
 set.seed(0)
-start_time <- Sys.time()
+
 X_low <- df_ld %>% select(-Y, -A) %>% as.matrix
 A_low <- df_ld %>% select(A) %>% as.matrix
 cv_l1 <- cv.glmnet(X_low, A_low, family = "binomial", alpha = 1)
+start_time <- Sys.time()
 l1_low <- glmnet(X_low, A_low, family = "binomial", 
                  alpha = 1, lambda = cv_l1$lambda.min)
 propen_score_low <- predict(l1_low, X_low, type = "response")
@@ -179,10 +180,10 @@ running_time_low = end_time - start_time
 
 ```{r}
 set.seed(0)
-start_time <- Sys.time()
 X_high <- df_hd %>% select(-Y, -A) %>% as.matrix
 A_high <- df_hd %>% select(A) %>% as.matrix
 cv_l1_high <- cv.glmnet(X_high, A_high, family = "binomial", alpha = 1)
+start_time <- Sys.time()
 l1_high <- glmnet(X_high, A_high, family = "binomial", 
                   alpha = 1, lambda = cv_l1_high$lambda.min)
 propen_score_high <- predict(l1_high, X_high, type = "response")

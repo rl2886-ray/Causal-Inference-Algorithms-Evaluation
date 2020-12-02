@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE, message = F, warning = F,
 
 ```{r load libraries}
 # Load libraries
-pack <- c("readr", "tidyverse", "glmnet", "pryr", "flextable")
+pack <- c("readr", "tidyverse", "glmnet", "pryr")
 
 # if package not already installed, install, and load packages
 if (!require("pacman")) install.packages("pacman")
@@ -222,16 +222,6 @@ true_ate <- data.frame(
   `Low Dim` = 2.5,
   `High Dim` = -3
 )
-
-myft_true_ate<- flextable(true_ate)
-ft_true <- add_header_lines(myft_true_ate, 
-        values = c("True ATE") ) 
-ft_true <- theme_box(ft_true)
-ft_true <- fontsize(ft_true, size = 13, part='header')
-ft_true <- fontsize(ft_true, size = 12, part='body')
-ft_true <- align(ft_true, align = 'center', part='all')
-ft_true <- autofit(ft_true)
-ft_true
 ```
 
 Performance = squared difference of true ATE and estimated ATE
@@ -269,28 +259,6 @@ knitr::kable(low_results)
 knitr::kable(high_results)
 ```
 
-```{r echo=F}
-myft_high <- flextable(high_results)
-ft_high <- add_header_lines(myft_high, 
-        values = c("High Dimension Dataset") ) 
-ft_high <- fontsize(ft_high, size = 14, part='header')
-ft_high <- fontsize(ft_high, size = 10, part='body')
-ft_high <- align(ft_high, align = 'center', part='all')
-ft_high <- autofit(ft_high)
-ft_high <- theme_box(ft_high)
-
-myft_low <- flextable(low_results)
-ft_low <- add_header_lines(myft_low,
-        values = c("Low Dimension Dataset") )
-ft_low <- fontsize(ft_low, size = 14, part='header')
-ft_low <- fontsize(ft_low, size = 10, part='body')
-ft_low <- align(ft_low, align = 'center', part='all')
-ft_low <- autofit(ft_low)
-ft_low <- theme_box(ft_low)
-
-ft_low
-ft_high
-```
 
 \newpage
 ```{r echo=FALSE}

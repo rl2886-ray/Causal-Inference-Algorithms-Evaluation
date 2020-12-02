@@ -217,11 +217,14 @@ matrix(c(ATE_high,ATE_low,
 ## Model Comparisons
 
 
+### True Average Treatment Effect
 ```{r, echo=F}
 true_ate <- data.frame(
-  `Low Dim` = 2.5,
-  `High Dim` = -3
+            Dataset = c("Low Dim.", "High Dim."),
+            `True ATE` = c(2.5, -3)
 )
+
+knitr::kable(true_ate)
 ```
 
 Performance = squared difference of true ATE and estimated ATE
@@ -254,11 +257,19 @@ low_results <- data.frame(
 
 ```
 
+
+### Low Dimension Dataset
 ```{r echo=F}
 knitr::kable(low_results)
+```
+
+### High Dimension Dataset
+```{r echo=F}
 knitr::kable(high_results)
 ```
 
+
+Weighted regression + L1 penalized logistic regression has the best performance on both datasets.
 
 \newpage
 ```{r echo=FALSE}

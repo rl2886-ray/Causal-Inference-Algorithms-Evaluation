@@ -4,7 +4,6 @@
 
 Term: Fall 2020
 
-+ Team # 6
 + Projec title: Causal Inference Algorithms Evaluation
 + Team members
 	+ Akey, Kristen kka2120@columbia.edu
